@@ -49,14 +49,21 @@ async function generateUniqueCode() {
 
 
 async function getUrlByCode(shortCode) {
-  const url = await Url.findOne({
-    shortCode,
-    isActive: true
-  });
+  const url = await Url.findOneAndUpdate(
+    { shortCode, isActive: true },
+    { $inc: { clickCount: 1 } },
+    { new: true }
+  );
 
   if (!url) {
     const error = new Error('Short URL not found');
     error.statusCode = 404;
+    throw error;
+  }
+
+  if (url.expiresAt && url.expiresAt < new Date()) {
+    const error = new Error('This short URL has expired');
+    error.statusCode = 410;
     throw error;
   }
 
