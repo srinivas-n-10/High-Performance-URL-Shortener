@@ -1,3 +1,4 @@
+const authRoutes=require('./routes/auth.routes');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(morgan(config.env === 'development' ? 'dev' : 'combined'));
 
 app.use('/health', healthRoutes);
+app.use('/api/auth',authRoutes);
 
 app.use(errorHandler);
 
