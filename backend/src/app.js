@@ -11,6 +11,8 @@ const config = require('./config');
 const app = express();
 const urlRoutes = require('./routes/url.routes');
 const { redirect } = require('./controllers/url.controller');
+const analyticsRoutes =
+require('./routes/analytics.routes');
 
 app.use(helmet());
 app.use(cors());
@@ -20,6 +22,7 @@ app.use(morgan(config.env === 'development' ? 'dev' : 'combined'));
 app.use('/health', healthRoutes);
 app.use('/api/auth',authRoutes);
 app.use('/api/url', urlRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.get('/:shortCode', redirect);
 

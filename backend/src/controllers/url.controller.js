@@ -1,3 +1,5 @@
+const parseRequestMeta = require('../utils/parseRequestMeta');
+const { recordClick } = require('../services/analytics.service');
 const { createShortUrl, getUrlByCode } = require('../services/url.service');
 
 async function shorten(req, res, next) {
@@ -31,17 +33,38 @@ async function shorten(req, res, next) {
 }
 
 
-async function redirect(req, res, next) {
-  try {
-    const { shortCode } = req.params;
+async function redirect(req,res,next){
+
+  try{
+
+    const {shortCode}=req.params;
+
 
     const url = await getUrlByCode(shortCode);
 
+
+    const meta=parseRequestMeta(req);
+
+
+    recordClick(url._id,meta)
+    .catch(err =>
+      console.error(
+        "Failed to record click:",
+        err.message
+      )
+    );
+
+
     res.redirect(url.longUrl);
 
-  } catch (err) {
-    next(err);
+
   }
+  catch(err){
+
+    next(err);
+
+  }
+
 }
 
 
