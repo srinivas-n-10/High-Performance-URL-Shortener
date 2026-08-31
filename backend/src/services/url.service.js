@@ -1,5 +1,8 @@
 const Url = require('../models/url.model');
 const generateShortCode = require('../utils/generateShortCode');
+const redisClient = require('../config/redis');
+
+const CACHE_TTL_SECONDS = 3600;
 
 const MAX_RETRIES = 5;
 
@@ -49,11 +52,37 @@ async function generateUniqueCode() {
 
 
 async function getUrlByCode(shortCode) {
+  const cacheKey = `url:${shortCode}`;
+
+  try {
+    const cached = await Promise.race([
+      redisClient.get(cacheKey),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Redis timeout')), 1000)
+      )
+    ]);
+
+    if (cached) {
+      const url = JSON.parse(cached);
+
+      // Don't wait for MongoDB click-count update.
+      Url.updateOne(
+        { _id: url._id },
+        { $inc: { clickCount: 1 } }
+      ).exec();
+
+      return url;
+    }
+  } catch (err) {
+    console.error('Redis cache error:', err.message);
+  }
+
   const url = await Url.findOneAndUpdate(
     { shortCode, isActive: true },
     { $inc: { clickCount: 1 } },
-    { new: true }
+    { returnDocument: 'after' }
   );
+  
 
   if (!url) {
     const error = new Error('Short URL not found');
@@ -65,6 +94,17 @@ async function getUrlByCode(shortCode) {
     const error = new Error('This short URL has expired');
     error.statusCode = 410;
     throw error;
+  }
+
+  try {
+    await redisClient.set(
+      cacheKey,
+      JSON.stringify(url),
+      'EX',
+      CACHE_TTL_SECONDS
+    );
+  } catch (err) {
+    console.error('Redis cache error:', err.message);
   }
 
   return url;
