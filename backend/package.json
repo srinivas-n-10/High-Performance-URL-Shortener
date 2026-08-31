@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+  "start": "node src/server.js",
+  "dev": "nodemon src/server.js",
+  "worker": "node src/workers/clickConsumer.worker.js",
+  "worker:dev": "nodemon src/workers/clickConsumer.worker.js"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +22,7 @@
     "helmet": "^8.2.0",
     "ioredis": "^6.0.0",
     "jsonwebtoken": "^9.0.3",
+    "kafkajs": "^2.2.4",
     "mongoose": "^9.7.4",
     "morgan": "^1.11.0",
     "nanoid": "^3.3.15",
