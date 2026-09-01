@@ -1,16 +1,24 @@
 const { Kafka } = require('kafkajs');
 const config = require('./index');
 
-const kafka = new Kafka({
-  clientId: config.kafkaClientId,
-  brokers: [config.kafkaBroker],
-});
+let kafka = null;
+let producer = null;
+let consumer = null;
 
-const producer = kafka.producer();
+if (config.kafkaBroker) {
+  kafka = new Kafka({
+    clientId: config.kafkaClientId,
+    brokers: [config.kafkaBroker],
+  });
 
-const consumer = kafka.consumer({
-  groupId: 'analytics-consumer-group',
-});
+  producer = kafka.producer();
+
+  consumer = kafka.consumer({
+    groupId: 'analytics-consumer-group',
+  });
+} else {
+  console.warn('Kafka not configured. Running without Kafka.');
+}
 
 module.exports = {
   kafka,
