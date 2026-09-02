@@ -109,7 +109,10 @@ async function getUrlByCode(shortCode) {
 
   return url;
 }
-
+async function getUrlsByUser(userId) {
+  const urls = await Url.find({ owner: userId }).sort({ createdAt: -1 });
+  return urls;
+}
 
 module.exports = {
   createShortUrl,

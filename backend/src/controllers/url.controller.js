@@ -1,5 +1,9 @@
 const parseRequestMeta = require('../utils/parseRequestMeta');
-const { createShortUrl, getUrlByCode } = require('../services/url.service');
+const {
+  createShortUrl,
+  getUrlByCode,
+  getUrlsByUser
+} = require('../services/url.service');
 const { publishClickEvent } = require('../services/kafkaProducer.service');
 
 async function shorten(req, res, next) {
@@ -54,9 +58,17 @@ async function redirect(req, res, next) {
     next(err);
   }
 }
-
+async function getMyUrls(req, res, next) {
+  try {
+    const urls = await getUrlsByUser(req.userId);
+    res.status(200).json({ success: true, data: urls });
+  } catch (err) {
+    next(err);
+  }
+}
 
 module.exports = {
   shorten,
   redirect,
+  getMyUrls
 };

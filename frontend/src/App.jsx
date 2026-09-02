@@ -1,32 +1,63 @@
-import { useEffect, useState } from "react";
-import { getHealth } from "./api/api";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from 'react-router-dom';
+
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Navbar from './components/Navbar';
+
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Analytics from './pages/Analytics';
 
 function App() {
-  const [status, setStatus] = useState("Checking server...");
-
-  useEffect(() => {
-    async function checkHealth() {
-      try {
-        const data = await getHealth();
-        setStatus(data.message);
-      } catch (error) {
-        setStatus("Backend not reachable");
-      }
-    }
-
-    checkHealth();
-  }, []);
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-lg rounded-xl p-8 text-center">
-        <h1 className="text-3xl font-bold mb-4">
-          High Performance URL Shortener
-        </h1>
+    <BrowserRouter>
+      <AuthProvider>
+        <div className="min-h-screen bg-gray-100">
+          <Navbar />
 
-        <p className="text-lg">{status}</p>
-      </div>
-    </div>
+          <Routes>
+            <Route
+              path="/"
+              element={<Home />}
+            />
+
+            <Route
+              path="/login"
+              element={<Login />}
+            />
+
+            <Route
+              path="/register"
+              element={<Register />}
+            />
+
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/analytics/:shortCode"
+              element={
+                <ProtectedRoute>
+                  <Analytics />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </div>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
