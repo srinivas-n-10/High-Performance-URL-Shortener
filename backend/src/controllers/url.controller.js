@@ -60,8 +60,15 @@ async function redirect(req, res, next) {
 }
 async function getMyUrls(req, res, next) {
   try {
-    const urls = await getUrlsByUser(req.userId);
-    res.status(200).json({ success: true, data: urls });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+
+    const result = await getUrlsByUser(req.userId, page, limit);
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
   } catch (err) {
     next(err);
   }

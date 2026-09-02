@@ -7,23 +7,15 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api
-      .get('/api/url/my-urls')
-      .then((res) => {
-        setUrls(res.data.data);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return (
-      <p className="text-center mt-16">
-        Loading...
-      </p>
-    );
-  }
+  api
+    .get('/api/url/my-urls?page=1&limit=20')
+    .then((res) => {
+      setUrls(res.data.data.urls);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+}, []);
 
   return (
     <div className="max-w-3xl mx-auto mt-12 p-6">

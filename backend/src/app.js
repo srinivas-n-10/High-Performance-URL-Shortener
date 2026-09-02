@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const compression = require('compression');
 
 const healthRoutes = require('./routes/health.routes');
 const errorHandler = require('./middlewares/errorHandler');
@@ -15,6 +16,7 @@ const analyticsRoutes =
 require('./routes/analytics.routes');
 
 app.use(helmet());
+app.use(compression());
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true,

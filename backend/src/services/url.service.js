@@ -109,12 +109,23 @@ async function getUrlByCode(shortCode) {
 
   return url;
 }
-async function getUrlsByUser(userId) {
-  const urls = await Url.find({ owner: userId }).sort({ createdAt: -1 });
-  return urls;
+async function getUrlsByUser(userId, page = 1, limit = 20) {
+  const skip = (page - 1) * limit;
+
+  const [urls, total] = await Promise.all([
+    Url.find({ owner: userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    Url.countDocuments({ owner: userId }),
+  ]);
+
+  return { urls, total, page, limit };
 }
 
 module.exports = {
   createShortUrl,
-  getUrlByCode
+  getUrlByCode,
+  getUrlsByUser
 };

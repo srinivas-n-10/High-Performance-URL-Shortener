@@ -32,9 +32,7 @@ async function getAnalyticsForUrl(shortCode, userId) {
   }
 
 
-  const clicks = await Click.find({
-    url: url._id
-  });
+  const clicks = await Click.find({ url: url._id }).lean();
 
 
   return {

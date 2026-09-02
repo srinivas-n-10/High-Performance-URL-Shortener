@@ -13,4 +13,7 @@ const urlSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
+urlSchema.index({ owner: 1, createdAt: -1 });
+
 module.exports = mongoose.model('Url', urlSchema);

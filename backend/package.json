@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "start": "node src/server.js",
-  "dev": "nodemon src/server.js",
-  "worker": "node src/workers/clickConsumer.worker.js",
-  "worker:dev": "nodemon src/workers/clickConsumer.worker.js"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "worker": "node src/workers/clickConsumer.worker.js",
+    "worker:dev": "nodemon src/workers/clickConsumer.worker.js"
   },
   "keywords": [],
   "author": "",
@@ -15,9 +15,11 @@
   "type": "commonjs",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "compression": "^1.8.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
     "geoip-lite": "^2.0.3",
     "helmet": "^8.2.0",
     "ioredis": "^6.0.0",
@@ -29,6 +31,7 @@
     "ua-parser-js": "^2.0.10"
   },
   "devDependencies": {
+    "autocannon": "^8.0.0",
     "nodemon": "^3.1.14"
   }
 }
