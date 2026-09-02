@@ -55,12 +55,11 @@ async function getUrlByCode(shortCode) {
   const cacheKey = `url:${shortCode}`;
 
   try {
-    const cached = await Promise.race([
-      redisClient.get(cacheKey),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Redis timeout')), 1000)
-      )
-    ]);
+    let cached = null;
+
+    if (redisClient.status === 'ready') {
+      cached = await redisClient.get(cacheKey);
+    }
 
     if (cached) {
       const url = JSON.parse(cached);
