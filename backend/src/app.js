@@ -17,8 +17,13 @@ require('./routes/analytics.routes');
 
 app.use(helmet());
 app.use(compression());
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://url-shortener-frontend-tau-fawn.vercel.app',
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use(express.json());
