@@ -6,7 +6,7 @@ const protect = require('../middlewares/auth.middleware');
 
 const router = express.Router();
 
-router.post('/shorten', shortenLimiter, shorten);
+router.post('/shorten', protect, shortenLimiter, shorten);
 router.get('/my-urls', protect, getMyUrls);
 
 module.exports = router;
