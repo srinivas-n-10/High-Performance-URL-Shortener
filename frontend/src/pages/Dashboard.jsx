@@ -11,7 +11,7 @@ useEffect(() => {
   api
     .get('/api/url/my-urls?page=1&limit=20')
     .then((res) => {
-      setUrls(res.data.data.urls);
+    setUrls(res.data.data.urls || []);
     })
     .catch((err) => {
       console.error('Failed to load URLs:', err);
